@@ -14,3 +14,14 @@ dwm-dragmfact-6.2.diff
 dwm-fibonacci-6.2.diff
 
 dwm-statusallmons-6.2.diff
+
+## keybinds
+Windows key is mod
+
+mod + shift + enter = terminal
+mod + d = dmenu
+mod + right click = drag to resize left and right
+mod + shift + right click = drag to resize up and down
+mod + shift + q = close current window
+mod + shift + e = exit dwm
+... soon to add more
