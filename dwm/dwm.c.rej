@@ -1,0 +1,19 @@
+--- dwm.c
++++ dwm.c
+@@ -58,7 +58,7 @@
+ #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
+ 
+ /* enums */
+-enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
++enum { CurNormal, CurResize, CurMove, CurDragFact, CurLast }; /* cursor */
+ enum { SchemeNorm, SchemeSel }; /* color schemes */
+ enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
+        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
+@@ -162,6 +162,7 @@ static void destroynotify(XEvent *e);
+ static void detach(Client *c);
+ static void detachstack(Client *c);
+ static Monitor *dirtomon(int dir);
++static void dragfact(const Arg *arg);
+ static void drawbar(Monitor *m);
+ static void drawbars(void);
+ static void enternotify(XEvent *e);

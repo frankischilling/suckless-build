@@ -59,7 +59,7 @@
 #define TEXTW(X)                (drw_fontset_getwidth(drw, (X)) + lrpad)
 
 /* enums */
-enum { CurNormal, CurResize, CurMove, CurLast }; /* cursor */
+enum { CurNormal, CurResize, CurMove, CurDragFact, CurLast }; /* cursor */
 enum { SchemeNorm, SchemeSel, SchemeHid }; /* color schemes */
 enum { NetSupported, NetWMName, NetWMState, NetWMCheck,
        NetWMFullscreen, NetActiveWindow, NetWMWindowType,
@@ -88,6 +88,7 @@ typedef struct Client Client;
 struct Client {
 	char name[256];
 	float mina, maxa;
+	float cfact;
 	int x, y, w, h;
 	int oldx, oldy, oldw, oldh;
 	int basew, baseh, incw, inch, maxw, maxh, minw, minh, hintsvalid;
@@ -165,6 +166,8 @@ static void destroynotify(XEvent *e);
 static void detach(Client *c);
 static void detachstack(Client *c);
 static Monitor *dirtomon(int dir);
+static void dragfact(const Arg *arg);
+static void dragcfact(const Arg *arg);
 static void drawbar(Monitor *m);
 static void drawbars(void);
 static void enternotify(XEvent *e);
@@ -200,6 +203,7 @@ static Monitor *recttomon(int x, int y, int w, int h);
 static void resize(Client *c, int x, int y, int w, int h, int interact);
 static void resizeclient(Client *c, int x, int y, int w, int h);
 static void resizemouse(const Arg *arg);
+static void resizeorfacts(const Arg *arg);
 static void restack(Monitor *m);
 static void run(void);
 static void scan(void);
@@ -209,6 +213,7 @@ static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
 static void setlayout(const Arg *arg);
+static void setcfact(const Arg *arg);
 static void setmfact(const Arg *arg);
 static void setup(void);
 static void seturgent(Client *c, int urg);
@@ -723,6 +728,150 @@ dirtomon(int dir)
 }
 
 void
+dragcfact(const Arg *arg)
+{
+	int prev_x, prev_y, dist_x, dist_y;
+	float fact;
+	Client *c;
+	XEvent ev;
+	Time lasttime = 0;
+
+	if (!(c = selmon->sel))
+		return;
+	if (c->isfloating) {
+		resizemouse(arg);
+		return;
+	}
+	#if !FAKEFULLSCREEN_PATCH
+	#if FAKEFULLSCREEN_CLIENT_PATCH
+	if (c->isfullscreen && !c->fakefullscreen) /* no support resizing fullscreen windows by mouse */
+		return;
+	#else
+	if (c->isfullscreen) /* no support resizing fullscreen windows by mouse */
+		return;
+	#endif // FAKEFULLSCREEN_CLIENT_PATCH
+	#endif // !FAKEFULLSCREEN_PATCH
+	restack(selmon);
+
+	if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
+		None, cursor[CurResize]->cursor, CurrentTime) != GrabSuccess)
+		return;
+	XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w/2, c->h/2);
+
+	prev_x = prev_y = -999999;
+
+	do {
+		XMaskEvent(dpy, MOUSEMASK|ExposureMask|SubstructureRedirectMask, &ev);
+		switch(ev.type) {
+		case ConfigureRequest:
+		case Expose:
+		case MapRequest:
+			handler[ev.type](&ev);
+			break;
+		case MotionNotify:
+			if ((ev.xmotion.time - lasttime) <= (1000 / 60))
+				continue;
+			lasttime = ev.xmotion.time;
+			if (prev_x == -999999) {
+				prev_x = ev.xmotion.x_root;
+				prev_y = ev.xmotion.y_root;
+			}
+
+			dist_x = ev.xmotion.x - prev_x;
+			dist_y = ev.xmotion.y - prev_y;
+
+			if (abs(dist_x) > abs(dist_y)) {
+				fact = (float) 4.0 * dist_x / c->mon->ww;
+			} else {
+				fact = (float) -4.0 * dist_y / c->mon->wh;
+			}
+
+			if (fact)
+				setcfact(&((Arg) { .f = fact }));
+
+			prev_x = ev.xmotion.x;
+			prev_y = ev.xmotion.y;
+			break;
+		}
+	} while (ev.type != ButtonRelease);
+
+
+	XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w/2, c->h/2);
+
+	XUngrabPointer(dpy, CurrentTime);
+	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
+}
+
+void
+dragfact(const Arg *arg)
+{
+	unsigned int n;
+	int px, py; // pointer coordinates
+	int dist_x, dist_y;
+	int horizontal = 0; // layout configuration
+	float mfact, cfact, cf, cw, ch, mw, mh;
+	Client *c;
+	Monitor *m = selmon;
+	XEvent ev;
+	Time lasttime = 0;
+
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	if (!(c = m->sel) || !n || !m->lt[m->sellt]->arrange)
+		return;
+
+	/* Add custom handling for horizontal layouts here, e.g. */
+	// if (m->lt[m->sellt]->arrange == bstack)
+	// 	horizontal = 1;
+
+	if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
+		None, cursor[CurResize]->cursor, CurrentTime) != GrabSuccess)
+		return;
+
+	if (!getrootptr(&px, &py))
+		return;
+
+	cf = c->cfact;
+	ch = c->h;
+	cw = c->w;
+	mw = m->ww * m->mfact;
+	mh = m->wh * m->mfact;
+
+	do {
+		XMaskEvent(dpy, MOUSEMASK|ExposureMask|SubstructureRedirectMask, &ev);
+		switch (ev.type) {
+		case ConfigureRequest:
+		case Expose:
+		case MapRequest:
+			handler[ev.type](&ev);
+			break;
+		case MotionNotify:
+			if ((ev.xmotion.time - lasttime) <= (1000 / 40))
+				continue;
+			lasttime = ev.xmotion.time;
+
+			dist_x = ev.xmotion.x - px;
+			dist_y = ev.xmotion.y - py;
+
+			if (horizontal) {
+				cfact = (float) cf * (cw + dist_x) / cw;
+				mfact = (float) (mh + dist_y) / m->wh;
+			} else {
+				cfact = (float) cf * (ch - dist_y) / ch;
+				mfact = (float) (mw + dist_x) / m->ww;
+			}
+
+			c->cfact = MAX(0.25, MIN(4.0, cfact));
+			m->mfact = MAX(0.05, MIN(0.95, mfact));
+			arrangemon(m);
+			break;
+		}
+	} while (ev.type != ButtonRelease);
+
+	XUngrabPointer(dpy, CurrentTime);
+	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
+}
+
+void
 drawbar(Monitor *m)
 {
 	int x, w, tw = 0, n = 0, scm;
@@ -1154,6 +1303,7 @@ manage(Window w, XWindowAttributes *wa)
 	c->w = c->oldw = wa->width;
 	c->h = c->oldh = wa->height;
 	c->oldbw = wa->border_width;
+	c->cfact = 1.0;
 
 	updatetitle(c);
 	if (XGetTransientForHint(dpy, w, &trans) && (t = wintoclient(trans))) {
@@ -1439,7 +1589,16 @@ resizemouse(const Arg *arg)
 	if (XGrabPointer(dpy, root, False, MOUSEMASK, GrabModeAsync, GrabModeAsync,
 		None, cursor[CurResize]->cursor, CurrentTime) != GrabSuccess)
 		return;
-	XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w + c->bw - 1, c->h + c->bw - 1);
+
+	if (c->isfloating || NULL == c->mon->lt[c->mon->sellt]->arrange) {
+		XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w + c->bw - 1, c->h + c->bw - 1);
+	} else {
+		XWarpPointer(dpy, None, root, 0, 0, 0, 0,
+			selmon->mx + (selmon->ww * selmon->mfact),
+			selmon->my + (selmon->wh / 2)
+		);
+	}
+
 	do {
 		XMaskEvent(dpy, MOUSEMASK|ExposureMask|SubstructureRedirectMask, &ev);
 		switch(ev.type) {
@@ -1455,19 +1614,24 @@ resizemouse(const Arg *arg)
 
 			nw = MAX(ev.xmotion.x - ocx - 2 * c->bw + 1, 1);
 			nh = MAX(ev.xmotion.y - ocy - 2 * c->bw + 1, 1);
-			if (c->mon->wx + nw >= selmon->wx && c->mon->wx + nw <= selmon->wx + selmon->ww
-			&& c->mon->wy + nh >= selmon->wy && c->mon->wy + nh <= selmon->wy + selmon->wh)
-			{
-				if (!c->isfloating && selmon->lt[selmon->sellt]->arrange
-				&& (abs(nw - c->w) > snap || abs(nh - c->h) > snap))
-					togglefloating(NULL);
-			}
+
 			if (!selmon->lt[selmon->sellt]->arrange || c->isfloating)
 				resize(c, c->x, c->y, nw, nh, 1);
 			break;
 		}
 	} while (ev.type != ButtonRelease);
-	XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w + c->bw - 1, c->h + c->bw - 1);
+
+	if (c->isfloating || NULL == c->mon->lt[c->mon->sellt]->arrange) {
+		XWarpPointer(dpy, None, c->win, 0, 0, 0, 0, c->w + c->bw - 1, c->h + c->bw - 1);
+	} else {
+		selmon->mfact = (double) (ev.xmotion.x_root - selmon->mx) / (double) selmon->ww;
+		arrange(selmon);
+		XWarpPointer(dpy, None, root, 0, 0, 0, 0,
+			selmon->mx + (selmon->ww * selmon->mfact),
+			selmon->my + (selmon->wh / 2)
+		);
+	}
+
 	XUngrabPointer(dpy, CurrentTime);
 	while (XCheckMaskEvent(dpy, EnterWindowMask, &ev));
 	if ((m = recttomon(c->x, c->y, c->w, c->h)) != selmon) {
@@ -1475,6 +1639,20 @@ resizemouse(const Arg *arg)
 		selmon = m;
 		focus(NULL);
 	}
+}
+
+void
+resizeorfacts(const Arg *arg)
+{
+	Monitor *m = selmon;
+
+	if (!m->sel)
+		return;
+
+	if (!m->lt[m->sellt]->arrange || m->sel->isfloating)
+		resizemouse(arg);
+	else
+		dragfact(arg);
 }
 
 void
@@ -1644,6 +1822,28 @@ setlayout(const Arg *arg)
 		drawbar(selmon);
 }
 
+void setcfact(const Arg *arg) {
+	float f;
+	Client *c;
+
+	c = selmon->sel;
+
+    if (!arg || !c || !selmon->lt[selmon->sellt]->arrange)
+		return;
+    if (!arg->f)
+		f = 1.0;
+    else if (arg->f > 4.0) // set fact absolutely
+        f = arg->f - 4.0;
+    else
+        f = arg->f + c->cfact;
+    if (f < 0.25)
+        f = 0.25;
+    else if (f > 4.0)
+        f = 4.0;
+	c->cfact = f;
+	arrange(selmon);
+}
+
 /* arg > 1.0 will set mfact absolutely */
 void
 setmfact(const Arg *arg)
@@ -1706,6 +1906,7 @@ setup(void)
 	cursor[CurNormal] = drw_cur_create(drw, XC_left_ptr);
 	cursor[CurResize] = drw_cur_create(drw, XC_sizing);
 	cursor[CurMove] = drw_cur_create(drw, XC_fleur);
+	cursor[CurDragFact] = drw_cur_create(drw, XC_rightbutton);
 	/* init appearance */
 	scheme = ecalloc(LENGTH(colors), sizeof(Clr *));
 	for (i = 0; i < LENGTH(colors); i++)
@@ -1847,9 +2048,15 @@ void
 tile(Monitor *m)
 {
 	unsigned int i, n, h, mw, my, ty;
+	float mfacts = 0, sfacts = 0;
 	Client *c;
 
-	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+	for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) {
+		if (n < m->nmaster)
+			mfacts += c->cfact;
+		else
+			sfacts += c->cfact;
+	}
 	if (n == 0)
 		return;
 
@@ -1859,15 +2066,16 @@ tile(Monitor *m)
 		mw = m->ww;
 	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 		if (i < m->nmaster) {
-			h = (m->wh - my) / (MIN(n, m->nmaster) - i);
+            h = (m->wh - my) * (c->cfact / mfacts);
 			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
-			if (my + HEIGHT(c) < m->wh)
-				my += HEIGHT(c);
+            my += HEIGHT(c);
+            mfacts -= c->cfact;
 		} else {
-			h = (m->wh - ty) / (n - i);
-			resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
-			if (ty + HEIGHT(c) < m->wh)
-				ty += HEIGHT(c);
+            h = (m->wh - ty) / (n - i);
+            h = (m->wh - ty) * (c->cfact / sfacts);
+            resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
+            ty += HEIGHT(c);
+            sfacts -= c->cfact;
 		}
 }
 
