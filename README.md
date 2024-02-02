@@ -1,3 +1,5 @@
+## this is a wip and only for private use currently 
+
 i am using the [undefined medium](https://github.com/andirueckel/undefined-medium) font for my st, dmenu and slstatus.
 
 
@@ -19,9 +21,15 @@ dwm-statusallmons-6.2.diff
 Windows key is mod
 
 mod + shift + enter = terminal
+
 mod + d = dmenu
+
 mod + right click = drag to resize left and right
+
 mod + shift + right click = drag to resize up and down
+
 mod + shift + q = close current window
+
 mod + shift + e = exit dwm
+
 ... soon to add more
