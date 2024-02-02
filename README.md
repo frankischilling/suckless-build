@@ -3,6 +3,8 @@ i am using the [undefined medium](https://github.com/andirueckel/undefined-mediu
 
 dwm patches used:
 
-fibonacci 
+dwm-fibonacci-6.2.diff
 
-awesomebar 
+dwm-awesomebar-20230431-6.4.diff
+
+dwm-statusallmons-6.2.diff
