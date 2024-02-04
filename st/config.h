@@ -98,35 +98,34 @@ unsigned int tabspaces = 8;
 
 /* Terminal colors (16 first used in escape sequence) */
 static const char *colorname[] = {
-	/* 8 normal colors */
-	"#1d2021", /* black */
-	"#cc241d", /* red3 */
-	"#98971a", /* green3 */
-	"#d79921", /* yellow3 */
-	"#458588", /* blue2 */
-	"#b16286", /* magenta3 */
-	"#689d6a", /* cyan3 */
-	"#a89984", /* gray90 */
+    /* 8 normal colors */
+    "#222222", /* col_gray1 - background */
+    "#005577", /* col_cyan - border (selected) */
+    "#bbbbbb", /* col_gray3 - foreground (unselected) */
+    "#eeeeee", /* col_gray4 - foreground (selected) */
+    "#005577", /* col_cyan - background (selected) */
+    "#444444", /* col_gray2 - border (unselected) */
+    "#bbbbbb", /* col_gray3 - foreground (selected) */
+    "#222222", /* col_gray1 - background (selected) */
 
-	/* 8 bright colors */
-	"#928374", /* gray50 */
-	"#fb4934", /* red */
-	"#b8bb26", /* green */
-	"#fabd2f", /* yellow */
-	"#83a598", /* #5c5cff - blue2 is not a standard color, so I used a similar shade */
-	"#d3869b", /* magenta */
-	"#8ec07c", /* cyan */
-	"#ebdbb2", /* white */
+    /* 8 bright colors */
+    "#005577", /* col_cyan - border (selected) */
+    "#005577", /* col_cyan - border (unselected) */
+    "#005577", /* col_cyan - border (selected) */
+    "#005577", /* col_cyan - background (unselected) */
+    "#eeeeee", /* col_gray4 - foreground (unselected) */
+    "#eeeeee", /* col_gray4 - foreground (selected) */
+    "#005577", /* col_cyan - background (selected) */
+    "#005577", /* col_cyan - background (unselected) */
 
-	[255] = 0,
+    [255] = 0,
 
-	/* more colors can be added after 255 to use with DefaultXX */
-	"#cccccc", /* Placeholder for additional color */
-	"#555555", /* Placeholder for additional color */
-	"#a89984", /* Placeholder for default foreground color */
-	"#282828", /* Placeholder for default background color */
+    /* more colors can be added after 255 to use with DefaultXX */
+    "#cccccc", /* Placeholder for additional color */
+    "#555555", /* Placeholder for additional color */
+    "#bbbbbb", /* Placeholder for default foreground color */
+    "#222222", /* Placeholder for default background color */
 };
-
 
 /*
  * Default colors (colorname index)
