@@ -63,12 +63,18 @@ static const char unknown_str[] = "n/a";
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
+
+// set text color and such
+static const char fgcolor[] = "#005577"; // Foreground color
+static const char bgcolor[] = "#000000"; // Background color
+
+ 
 static const struct arg args[] = {
 	/* function format          argument */
-    { datetime,      "%s",                        "%I:%M %p - %F | " },   /* 12-hour clock with AM/PM - Date */
+    { datetime,      "%s",                        " %I:%M %p - %F | " },   /* 12-hour clock with AM/PM - Date */
     { ram_used,      " RAM: %s /",            NULL },              /* Used RAM in GiB */
-    { ram_total,     " %s ",                 NULL },              /* Total RAM in GiB */
-    { disk_used,     " Disk: %s  /",          "/" },               /* Used disk space for root directory in GiB */
-    { disk_total,    " %s  ",            "/" },               /* Total disk space for root directory in GiB */
+    { ram_total,     " %s | ",                 NULL },              /* Total RAM in GiB */
+    { disk_used,     " Disk: %s /",          "/" },               /* Used disk space for root directory in GiB */
+    { disk_total,    " %s | ",            "/" },               /* Total disk space for root directory in GiB */
     { cpu_perc,      " CPU: %s%% ",              NULL },              /* CPU usage */  
 };
