@@ -45,4 +45,6 @@ shift + scroll up = st scroll up
 
 shift + scroll down = st scroll down
 
+mod + shift + s = screenshot copy to clipboard
+
 ... soon to add more
