@@ -77,4 +77,6 @@ static const struct arg args[] = {
     { disk_used,     " Disk: %s /",          "/" },               /* Used disk space for root directory in GiB */
     { disk_total,    " %s | ",            "/" },               /* Total disk space for root directory in GiB */
     { cpu_perc,      " CPU: %s%% ",              NULL },              /* CPU usage */  
+    // remove for desktop config
+    { battery_remaining,  " Battery: %s | ",        "BAT1" },          /* Battery remaining
 };
