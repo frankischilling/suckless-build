@@ -93,22 +93,17 @@
 		    pscanf(path, "%ju", &charge_now) < 0)
 			return NULL;
 
-		if (!strcmp(state, "Discharging")) {
-			if (!pick(bat, POWER_SUPPLY_CURRENT, POWER_SUPPLY_POWER, path,
-			          sizeof(path)) ||
-			    pscanf(path, "%ju", &current_now) < 0)
-				return NULL;
-
-			if (current_now == 0)
-				return NULL;
-
-			timeleft = (double)charge_now / (double)current_now;
-			h = timeleft;
-			m = (timeleft - (double)h) * 60;
-
-			return bprintf("%juh %jum", h, m);
+	if (pick(bat, POWER_SUPPLY_CURRENT, POWER_SUPPLY_POWER, path,
+		         sizeof(path)) &&
+		    pscanf(path, "%ju", &current_now) >= 0 &&
+		    current_now != 0) {
+		    timeleft = (double)charge_now / (double)current_now;
+		    h = timeleft;
+		    m = (timeleft - (double)h) * 60;
+		
+		    return bprintf("%juh %jum", h, m);
 		}
-
+		
 		return "";
 	}
 #elif defined(__OpenBSD__)

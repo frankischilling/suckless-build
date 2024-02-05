@@ -71,12 +71,14 @@ static const char bgcolor[] = "#000000"; // Background color
  
 static const struct arg args[] = {
 	/* function format          argument */
-    { datetime,      "%s",                        " %I:%M %p - %F | " },   /* 12-hour clock with AM/PM - Date */
-    { ram_used,      " RAM: %s /",            NULL },              /* Used RAM in GiB */
-    { ram_total,     " %s | ",                 NULL },              /* Total RAM in GiB */
-    { disk_used,     " Disk: %s /",          "/" },               /* Used disk space for root directory in GiB */
-    { disk_total,    " %s | ",            "/" },               /* Total disk space for root directory in GiB */
-    { cpu_perc,      " CPU: %s%% ",              NULL },              /* CPU usage */  
-    // remove for desktop config
-    { battery_remaining,  " Battery: %s | ",        "BAT1" },          /* Battery remaining
+    { datetime,           "%s",                        " %I:%M %p - %F | " },   /* 12-hour clock with AM/PM - Date */
+    { ram_used,           " RAM: %s /",            NULL },             /* Used RAM in GiB */
+    { ram_total,          " %s | ",                 NULL },            /* Total RAM in GiB */
+    { disk_used,          " Disk: %s /",          "/" },               /* Used disk space for root directory in GiB */
+    { disk_total,         " %s | ",            "/" },                  /* Total disk space for root directory in GiB */
+    { cpu_perc,           " CPU: %s%% | ",              NULL },        /* CPU usage */  
+    // remove for desktop config 
+    { battery_state,      " Battery: %s | ",          "BAT1" },               /* Battery charging state */
+	// remove for desktop config
+    { battery_remaining,  " Battery remaining: %s | ",        "BAT1" },          /* Battery remaining time */
 };
