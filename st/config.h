@@ -8,6 +8,9 @@
 static char *font = "undefined medium:pixelsize=15:antialias=true:autohint=true";
 static int borderpx = 2;
 
+/* bg opacity */
+float alpha = 0.8;
+
 /*
  * What program is execed by st depends of these precedence rules:
  * 1: program passed with -e
@@ -16,7 +19,7 @@ static int borderpx = 2;
  * 4: value of shell in /etc/passwd
  * 5: value of shell in config.h
  */
-static char *shell = "/usr/bin/sh";
+static char *shell = "/usr/bin/zsh";
 char *utmp = NULL;
 /* scroll program: to enable use a string like "scroll" */
 char *scroll = NULL;
