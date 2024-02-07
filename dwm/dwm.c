@@ -123,6 +123,7 @@ struct Monitor {
 	int bt;               /* number of tasks */
 	int mx, my, mw, mh;   /* screen size */
 	int wx, wy, ww, wh;   /* window area  */
+	int gappx;
 	unsigned int seltags;
 	unsigned int sellt;
 	unsigned int tagset[2];
@@ -212,6 +213,7 @@ static void sendmon(Client *c, Monitor *m);
 static void setclientstate(Client *c, long state);
 static void setfocus(Client *c);
 static void setfullscreen(Client *c, int fullscreen);
+static void setgaps(const Arg *arg);
 static void setlayout(const Arg *arg);
 static void setcfact(const Arg *arg);
 static void setmfact(const Arg *arg);
@@ -673,6 +675,7 @@ createmon(void)
 	m->nmaster = nmaster;
 	m->showbar = showbar;
 	m->topbar = topbar;
+	m->gappx = gappx;
 	m->lt[0] = &layouts[0];
 	m->lt[1] = &layouts[1 % LENGTH(layouts)];
 	strncpy(m->ltsymbol, layouts[0].symbol, sizeof m->ltsymbol);
@@ -1323,6 +1326,15 @@ manage(Window w, XWindowAttributes *wa)
 	c->bw = borderpx;
 
 	wc.border_width = c->bw;
+
+	if (((nexttiled(c->mon->clients) == c && !nexttiled(c->next))
+  		 || &monocle == c->mon->lt[c->mon->sellt]->arrange))
+    {
+			c->w = wc.width += c->bw * 2;
+			c->h = wc.height += c->bw * 2;
+			wc.border_width = 0;
+	}
+	
 	XConfigureWindow(dpy, w, CWBorderWidth, &wc);
 	XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColBorder].pixel);
 	configure(c); /* propagates border_width, if size doesn't change */
@@ -1350,6 +1362,17 @@ manage(Window w, XWindowAttributes *wa)
 		XMapWindow(dpy, c->win);
 	focus(NULL);
 }
+
+void
+setgaps(const Arg *arg)
+{
+	if ((arg->i == 0) || (selmon->gappx + arg->i < 0))
+		selmon->gappx = 0;
+	else
+		selmon->gappx += arg->i;
+	arrange(selmon);
+}
+
 
 void
 mappingnotify(XEvent *e)
@@ -2047,7 +2070,7 @@ tagmon(const Arg *arg)
 void
 tile(Monitor *m)
 {
-	unsigned int i, n, h, mw, my, ty;
+	unsigned int i, n, h, mw, my, ty, ns;
 	float mfacts = 0, sfacts = 0;
 	Client *c;
 
@@ -2059,22 +2082,32 @@ tile(Monitor *m)
 	}
 	if (n == 0)
 		return;
+		if(n == 1){
+			c = nexttiled(m->clients);
+			resize(c, m->wx, m->wy, m->ww - 2 * c->bw, m->wh - 2 * c->bw, 0);
+			return;
+		}
 
-	if (n > m->nmaster)
+	if (n > m->nmaster) {
 		mw = m->nmaster ? m->ww * m->mfact : 0;
-	else
-		mw = m->ww;
-	for (i = my = ty = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
+		ns = m->nmaster > 0 ? 2 : 1;
+	}
+	else{
+		mw = m->ww - m->gappx;
+		ns = 1;
+	}
+	for (i = 0, my = ty = m->gappx, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
 		if (i < m->nmaster) {
+			h = (m->wh - my) / (MIN(n, m->nmaster) - i) - m->gappx;
             h = (m->wh - my) * (c->cfact / mfacts);
-			resize(c, m->wx, m->wy + my, mw - (2*c->bw), h - (2*c->bw), 0);
-            my += HEIGHT(c);
+            resize(c, m->wx + m->gappx, m->wy + my, mw - 2*c->bw - m->gappx*(5-ns)/2, h - 2*c->bw, 0);
+			my += HEIGHT(c) + m->gappx;
             mfacts -= c->cfact;
 		} else {
-            h = (m->wh - ty) / (n - i);
+        	h = (m->wh - ty) / (n - i) - m->gappx;
             h = (m->wh - ty) * (c->cfact / sfacts);
-            resize(c, m->wx + mw, m->wy + ty, m->ww - mw - (2*c->bw), h - (2*c->bw), 0);
-            ty += HEIGHT(c);
+            resize(c, m->wx + mw + m->gappx/ns, m->wy + ty, m->ww - mw - (2*c->bw) - m->gappx*(5-ns)/2, h - 2*c->bw, 0);
+            ty += HEIGHT(c) + m->gappx;
             sfacts -= c->cfact;
 		}
 }
