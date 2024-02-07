@@ -70,7 +70,7 @@ static const char *termcmd[]  = { "st", NULL };
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	// take screenshot
-    { MODKEY|ShiftMask, XK_s, spawn, SHCMD("scrot -s /tmp/screenshot.png && xclip -selection clipboard -t image/png /tmp/screenshot.png") },
+	{ MODKEY|ShiftMask, XK_s, spawn, SHCMD("~/.local/shell/screenshot.sh") },	
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
