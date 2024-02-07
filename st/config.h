@@ -9,7 +9,7 @@ static char *font = "undefined medium:pixelsize=15:antialias=true:autohint=true"
 static int borderpx = 2;
 
 /* bg opacity */
-float alpha = 0.8;
+float alpha = 0.9;
 
 /*
  * What program is execed by st depends of these precedence rules:
