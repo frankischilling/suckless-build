@@ -28,7 +28,9 @@ st-scrollback-0.8.5.diff
 
 st-scrollback-mouse-20220127-2c5edf2.diff
 
-st-alpha-20220206-0.8.5.diff **USING PICOM**
+st-alpha-20220206-0.8.5.diff **USING PICOM FOR COMPOSITOR**
+
+dwm-movestack-20211115-a786211.diff
 
 ## keybinds
 Windows key is mod
@@ -50,5 +52,9 @@ shift + scroll up = st scroll up
 shift + scroll down = st scroll down
 
 mod + shift + s = screenshot copy to clipboard
+
+mod + shift + j = move stack
+
+mod + shift + h = move stack 
 
 ... soon to add more
