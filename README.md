@@ -57,4 +57,10 @@ mod + shift + j = move stack
 
 mod + shift + h = move stack 
 
+mod + shift + equals = vol up
+
+mod + shift + minus = vol down
+
+mod + shift + 0 = mute
+
 ... soon to add more
