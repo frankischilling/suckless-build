@@ -66,19 +66,25 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *mutecmd[] = { "amixer", "-q", "set", "Master", "toggle", NULL };
+static const char *volupcmd[] = { "amixer", "-q", "set", "Master", "5%+", "unmute", NULL };
+static const char *voldowncmd[] = { "amixer", "-q", "set", "Master", "5%-", "unmute", NULL };
 
 #include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	// take screenshot
 	{ MODKEY|ShiftMask, XK_s, spawn, SHCMD("~/.local/shell/screenshot.sh") },	
-	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
-	{ MODKEY,                       XK_minus,  setgaps,        {.i = -5 } },
-	{ MODKEY,                       XK_equal,  setgaps,        {.i = +5 } },
-    { MODKEY|ShiftMask,             XK_equal,  setgaps,        {.i = 0  } },
-	{ MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } },
+	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } }, // spawn dmenu
+	{ MODKEY|ShiftMask,             XK_equal,   spawn,          {.v = volupcmd } }, // vol up
+	{ MODKEY|ShiftMask,             XK_minus,  spawn,          {.v = voldowncmd } }, // vol down
+	{ MODKEY|ShiftMask,             XK_0,      spawn,          {.v = mutecmd } }, // mute 
+	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } }, // spawn term
+	{ MODKEY,                       XK_b,      togglebar,      {0} }, // toggle bar
+	{ MODKEY,                       XK_minus,  setgaps,        {.i = -5 } }, // set gaps smaller
+	{ MODKEY,                       XK_equal,  setgaps,        {.i = +5 } }, // set gaps more
+    { MODKEY|ShiftMask,             XK_9,      setgaps,        {.i = 0  } }, // reset gaps
+	{ MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } }, 
 	{ MODKEY,                       XK_k,      focusstackvis,  {.i = -1 } },
     { MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } }, // move stack
     { MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } }, // move stack
