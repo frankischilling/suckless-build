@@ -63,4 +63,8 @@ mod + shift + minus = vol down
 
 mod + shift + 0 = mute
 
+mod + shift + control + r = fibonacci spiral
+
+mod + shift + r = fibonacci dwindle 
+
 ... soon to add more
