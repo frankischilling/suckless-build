@@ -69,28 +69,29 @@ static const char *termcmd[]  = { "st", NULL };
 static const char *mutecmd[] = { "amixer", "-q", "set", "Master", "toggle", NULL };
 static const char *volupcmd[] = { "amixer", "-q", "set", "Master", "5%+", "unmute", NULL };
 static const char *voldowncmd[] = { "amixer", "-q", "set", "Master", "5%-", "unmute", NULL };
+static const char *retromcmd[] = { "cool-retro-term", NULL};
 static const char *chromiumcmd[] = { "chromium", NULL};
 
 #include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	// take screenshot
-	{ MODKEY|ShiftMask, XK_s, spawn, SHCMD("~/.local/shell/screenshot.sh") },	
+	{ MODKEY|ShiftMask,             XK_s,      spawn,  		   SHCMD("~/.local/shell/screenshot.sh") },	
 	{ MODKEY,                       XK_d,      spawn,          {.v = dmenucmd } }, // spawn dmenu
-	{ MODKEY|ShiftMask,             XK_equal,   spawn,         {.v = volupcmd } }, // vol up
+	{ MODKEY|ShiftMask,             XK_equal,  spawn,          {.v = volupcmd } }, // vol up
 	{ MODKEY|ShiftMask,             XK_minus,  spawn,          {.v = voldowncmd } }, // vol down
 	{ MODKEY|ShiftMask,             XK_0,      spawn,          {.v = mutecmd } }, // mute 
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } }, // spawn term
-	{ MODKEY, 			XK_r,	   spawn,          {.v = retromcmd } }, // spawn cool retro term
-	{ MODKEY, 			XK_c,	   spawn, 	   {.v = chromiumcmd } }, // spawn chromium
-	{ MODKEY,                       XK_b,      togglebar,      {0} },        // toggle bar
+	{ MODKEY, 						XK_r,	   spawn, 		   {.v = retromcmd } }, // spawn cool retro term
+	{ MODKEY, 						XK_c,	   spawn, 		   {.v = chromiumcmd } }, // spawn chromium
+	{ MODKEY|ShiftMask,             XK_b,      togglebar,      {0} },		 // toggle bar
 	{ MODKEY,                       XK_minus,  setgaps,        {.i = -5 } }, // set gaps smaller
 	{ MODKEY,                       XK_equal,  setgaps,        {.i = +5 } }, // set gaps more
-        { MODKEY|ShiftMask,             XK_9,      setgaps,        {.i = 0  } }, // reset gaps
+    { MODKEY|ShiftMask,             XK_9,      setgaps,        {.i = 0  } }, // reset gaps
 	{ MODKEY,                       XK_j,      focusstackvis,  {.i = +1 } }, 
 	{ MODKEY,                       XK_k,      focusstackvis,  {.i = -1 } },
-        { MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } }, // move stack
-        { MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } }, // move stack
+    { MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } }, // move stack
+    { MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } }, // move stack
 	{ MODKEY|ShiftMask,             XK_j,      focusstackhid,  {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      focusstackhid,  {.i = -1 } },
 	{ MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
@@ -103,12 +104,12 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
-	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY|ShiftMask|Control,                       XK_r,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
-    	{ MODKEY|ShiftMask,             XK_h,      setcfact,       {.f = +0.25} }, // resize +
-    	{MODKEY|ShiftMask,             XK_l,      setcfact,       {.f = -0.25} }, //  resize -
-    	{ MODKEY|ShiftMask,             XK_o,      setcfact,       {.f =  0.00} }, // reset?
+    { MODKEY|ShiftMask,             XK_h,      setcfact,       {.f = +0.25} }, // resize +
+    { MODKEY|ShiftMask,             XK_l,      setcfact,       {.f = -0.25} }, //  resize -
+    { MODKEY|ShiftMask,             XK_o,      setcfact,       {.f =  0.00} }, // reset?
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
@@ -149,4 +150,3 @@ static const Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button1,        tag,            {0} },
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 };
-
