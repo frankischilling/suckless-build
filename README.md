@@ -2,6 +2,8 @@
 
 i am using the [undefined medium](https://github.com/andirueckel/undefined-medium) font for my st, dmenu and slstatus.
 
+i am also using [nerd fonts](https://www.nerdfonts.com/) too
+
 ## dwm patches
 
 dwm-awesomebar-20230431-6.4.diff
