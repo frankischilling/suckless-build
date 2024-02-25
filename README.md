@@ -18,6 +18,8 @@ dwm-fibonacci-6.2.diff
 
 dwm-statusallmons-6.2.diff
 
+dwm-movestack.diff
+
 dwm-fibonaccigaps-6.2.diff
 
 ## st patches
