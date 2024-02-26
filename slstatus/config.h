@@ -67,7 +67,6 @@ static const char unknown_str[] = "n/a";
 // set text color and such
 static const char fgcolor[] = "#005577"; // Foreground color
 static const char bgcolor[] = "#000000"; // Background color
-
  
 static const struct arg args[] = {
 	/* function format          argument */
@@ -78,7 +77,9 @@ static const struct arg args[] = {
     { disk_total,         " %s | ",            "/" },                  /* Total disk space for root directory in GiB */
     { cpu_perc,           " CPU: %s%% | ",              NULL },        /* CPU usage */  
     // remove for desktop config 
-    { battery_state,      " Battery: %s | ",          "BAT1" },               /* Battery charging state */
+    { battery_state,      " Battery: %s | ",          "BAT0" },               /* Battery charging state */
 	// remove for desktop config
-    { battery_remaining,  " Battery remaining: %s | ",        "BAT1" },          /* Battery remaining time */
+    { battery_remaining,  " Battery remaining: %s | ",        "BAT0" },          /* Battery remaining time */
+{ run_command, " Vol: %s | ", "pamixer --get-volume-human | tr -d '\n%'" },
+ 	 	
 };
