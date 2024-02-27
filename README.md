@@ -4,6 +4,8 @@ i am using the [undefined medium](https://github.com/andirueckel/undefined-mediu
 
 i am also using [nerd fonts](https://www.nerdfonts.com/) too
 
+## dwmflexi patch also is in the works
+
 ## dwm patches
 
 dwm-awesomebar-20230431-6.4.diff
