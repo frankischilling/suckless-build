@@ -1,5 +1,9 @@
 ## this is a wip and only for private use currently 
 
+## todo
+
+add sLock and configure it
+
 i am using the [undefined medium](https://github.com/andirueckel/undefined-medium) font for my st, dmenu and slstatus.
 
 i am also using [nerd fonts](https://www.nerdfonts.com/) too
