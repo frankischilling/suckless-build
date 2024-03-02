@@ -77,4 +77,12 @@ mod + shift + control + r = fibonacci spiral
 
 mod + shift + r = fibonacci dwindle 
 
+## st bnindings
+
+mod + equals = size up ( in st ) 
+
+mod + minus = size down ( in st ) 
+
+mod + escape = selection mode 
+
 ... soon to add more
