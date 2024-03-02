@@ -1,0 +1,16 @@
+--- x.c
++++ x.c
+@@ -1731,6 +1731,13 @@ kpress(XEvent *ev)
+ 		return;
+ 
+ 	len = XmbLookupString(xw.xic, e, buf, sizeof buf, &ksym, &status);
++    if ( IS_SET(MODE_KBDSELECT) ) {
++		if ( match(XK_NO_MOD, e->state) ||
++            (XK_Shift_L | XK_Shift_R) & e->state )
++            win.mode ^= trt_kbdselect(ksym, buf, len);
++		return;
++    }
++
+ 	/* 1. shortcuts */
+ 	for (bp = shortcuts; bp < shortcuts + LEN(shortcuts); bp++) {
+ 		if (ksym == bp->keysym && match(bp->mod, e->state)) {
