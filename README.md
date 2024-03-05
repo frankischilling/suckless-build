@@ -73,9 +73,11 @@ mod + shift + minus = vol down
 
 mod + shift + 0 = mute
 
-mod + shift + control + r = fibonacci spiral
+mod + shift + m = fibonacci spiral
 
-mod + shift + r = fibonacci dwindle 
+~~mod + shift + r = fibonacci dwindle~~
+
+mod + shift + r = dmenu run command 
 
 ## st bnindings
 
