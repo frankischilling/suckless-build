@@ -1316,7 +1316,7 @@ static const Key keys[] = {
 	{ MODKEY, 						XK_r,	   spawn, 		   {.v = retromcmd } }, // spawn cool retro term
 	{ MODKEY, 						XK_c,	   spawn, 		   {.v = chromiumcmd } }, // spawn chromium
 	{ MODKEY|ShiftMask,             XK_m,      setlayout,      {.v = &layouts[4]} },
-
+	{ MODKEY|ShiftMask, 	        XK_r,	   spawn, 		   SHCMD("~/.local/shell/dmenu_command.sh") },
 };
 
 #if KEYMODES_PATCHs
