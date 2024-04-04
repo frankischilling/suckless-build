@@ -79,6 +79,8 @@ mod + shift + m = fibonacci spiral
 
 mod + shift + r = dmenu run command 
 
+mod + shift + b = rofi bluetooth menu
+
 ## st bnindings
 
 mod + equals = size up ( in st ) 
