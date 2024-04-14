@@ -901,6 +901,8 @@ static const char *volupcmd[] = { "amixer", "-D", "pulse", "sset", "Master",  "5
 static const char *voldowncmd[] = { "amixer", "-D", "pulse", "sset", "Master", "5%-", NULL };
 static const char *retromcmd[] = { "cool-retro-term", NULL};
 static const char *chromiumcmd[] = { "google-chrome-stable", NULL};
+static const char *rofibluetooth[] = { "rofi-bluetooth", NULL};
+static const char *discord[] = { "discord-screenaudio", NULL};
 
 static const Key keys[] = {
 	/* modifier                     key            function                argument */
@@ -1083,9 +1085,9 @@ static const Key keys[] = {
 	#if XRDB_PATCH && !BAR_VTCOLORS_PATCH
 	{ MODKEY|ShiftMask,             XK_F5,         xrdb,                   {.v = NULL } },
 	#endif // XRDB_PATCH
-	{ MODKEY,                       XK_t,          setlayout,              {.v = &layouts[0]} },
-	{ MODKEY,                       XK_f,          setlayout,              {.v = &layouts[1]} },
-	{ MODKEY,                       XK_m,          setlayout,              {.v = &layouts[2]} },
+//	{ MODKEY,                       XK_t,          setlayout,              {.v = &layouts[0]} },
+//	{ MODKEY,                       XK_f,          setlayout,              {.v = &layouts[1]} },
+//	{ MODKEY,                       XK_m,          setlayout,              {.v = &layouts[2]} },
 	#if COLUMNS_LAYOUT
 	{ MODKEY,                       XK_c,          setlayout,              {.v = &layouts[3]} },
 	#endif // COLUMNS_LAYOUT
@@ -1145,8 +1147,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_0,          view,                   {.ui = ~SPTAGMASK } },
 	{ MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~SPTAGMASK } },
 	#else
-	{ MODKEY,                       XK_0,          view,                   {.ui = ~0 } },
-	{ MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },
+//	{ MODKEY,                       XK_0,          view,                   {.ui = ~0 } },
+//	{ MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },
 	#endif // SCRATCHPAD_ALT_1_PATCH
 	{ MODKEY,                       XK_comma,      focusmon,               {.i = -1 } },
 	{ MODKEY,                       XK_period,     focusmon,               {.i = +1 } },
@@ -1161,24 +1163,24 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask,           XK_Right,      tagandviewtoright,      {0} }, // note keybinding conflict with placedir
 	#endif // FOCUSADJACENTTAG_PATCH
 	#if TAGALL_PATCH
-	{ MODKEY|ShiftMask,             XK_F1,         tagall,                 {.v = "F1"} },
-	{ MODKEY|ShiftMask,             XK_F2,         tagall,                 {.v = "F2"} },
-	{ MODKEY|ShiftMask,             XK_F3,         tagall,                 {.v = "F3"} },
-	{ MODKEY|ShiftMask,             XK_F4,         tagall,                 {.v = "F4"} },
-	{ MODKEY|ShiftMask,             XK_F5,         tagall,                 {.v = "F5"} },
-	{ MODKEY|ShiftMask,             XK_F6,         tagall,                 {.v = "F6"} },
-	{ MODKEY|ShiftMask,             XK_F7,         tagall,                 {.v = "F7"} },
-	{ MODKEY|ShiftMask,             XK_F8,         tagall,                 {.v = "F8"} },
-	{ MODKEY|ShiftMask,             XK_F9,         tagall,                 {.v = "F9"} },
-	{ MODKEY|ControlMask,           XK_F1,         tagall,                 {.v = "1"} },
-	{ MODKEY|ControlMask,           XK_F2,         tagall,                 {.v = "2"} },
-	{ MODKEY|ControlMask,           XK_F3,         tagall,                 {.v = "3"} },
-	{ MODKEY|ControlMask,           XK_F4,         tagall,                 {.v = "4"} },
-	{ MODKEY|ControlMask,           XK_F5,         tagall,                 {.v = "5"} },
-	{ MODKEY|ControlMask,           XK_F6,         tagall,                 {.v = "6"} },
-	{ MODKEY|ControlMask,           XK_F7,         tagall,                 {.v = "7"} },
-	{ MODKEY|ControlMask,           XK_F8,         tagall,                 {.v = "8"} },
-	{ MODKEY|ControlMask,           XK_F9,         tagall,                 {.v = "9"} },
+//	{ MODKEY|ShiftMask,             XK_F1,         tagall,                 {.v = "F1"} },
+//	{ MODKEY|ShiftMask,             XK_F2,         tagall,                 {.v = "F2"} },
+//	{ MODKEY|ShiftMask,             XK_F3,         tagall,                 {.v = "F3"} },
+//	{ MODKEY|ShiftMask,             XK_F4,         tagall,                 {.v = "F4"} },
+//	{ MODKEY|ShiftMask,             XK_F5,         tagall,                 {.v = "F5"} },
+//	{ MODKEY|ShiftMask,             XK_F6,         tagall,                 {.v = "F6"} },
+//	{ MODKEY|ShiftMask,             XK_F7,         tagall,                 {.v = "F7"} },
+//	{ MODKEY|ShiftMask,             XK_F8,         tagall,                 {.v = "F8"} },
+//	{ MODKEY|ShiftMask,             XK_F9,         tagall,                 {.v = "F9"} },
+//	{ MODKEY|ControlMask,           XK_F1,         tagall,                 {.v = "1"} },
+//	{ MODKEY|ControlMask,           XK_F2,         tagall,                 {.v = "2"} },
+//	{ MODKEY|ControlMask,           XK_F3,         tagall,                 {.v = "3"} },
+//	{ MODKEY|ControlMask,           XK_F4,         tagall,                 {.v = "4"} },
+//	{ MODKEY|ControlMask,           XK_F5,         tagall,                 {.v = "5"} },
+//	{ MODKEY|ControlMask,           XK_F6,         tagall,                 {.v = "6"} },
+//	{ MODKEY|ControlMask,           XK_F7,         tagall,                 {.v = "7"} },
+//	{ MODKEY|ControlMask,           XK_F8,         tagall,                 {.v = "8"} },
+//	{ MODKEY|ControlMask,           XK_F9,         tagall,                 {.v = "9"} },
 	#endif // TAGALL_PATCH
 	#if TAGALLMON_PATCH
 	{ MODKEY|Mod4Mask|ShiftMask,    XK_comma,      tagallmon,              {.i = +1 } },
@@ -1299,15 +1301,6 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_F2,         mpdchange,              {.i = +1} },
 	{ MODKEY,                       XK_Escape,     mpdcontrol,             {0} },
 	#endif // MPDCONTROL_PATCH
-	TAGKEYS(                        XK_1,                                  0)
-	TAGKEYS(                        XK_2,                                  1)
-	TAGKEYS(                        XK_3,                                  2)
-	TAGKEYS(                        XK_4,                                  3)
-	TAGKEYS(                        XK_5,                                  4)
-	TAGKEYS(                        XK_6,                                  5)
-	TAGKEYS(                        XK_7,                                  6)
-	TAGKEYS(                        XK_8,                                  7)
-	TAGKEYS(                        XK_9,                                  8)
 	// Custom Keys
 	{ MODKEY|ShiftMask,             XK_s,      spawn,  		   SHCMD("~/.local/shell/screenshot.sh") },	
 	{ MODKEY|ShiftMask,             XK_equal,  spawn,          {.v = volupcmd } }, // vol up
@@ -1317,6 +1310,8 @@ static const Key keys[] = {
 	{ MODKEY, 						XK_c,	   spawn, 		   {.v = chromiumcmd } }, // spawn chromium
 	{ MODKEY|ShiftMask,             XK_m,      setlayout,      {.v = &layouts[4]} },
 	{ MODKEY|ShiftMask, 	        XK_r,	   spawn, 		   SHCMD("~/.local/shell/dmenu_command.sh") },
+	{ MODKEY|ShiftMask,             XK_b,      spawn,          {.v = rofibluetooth } }, // spawn rofi bluetooth
+	{ MODKEY|ShiftMask, 			XK_d,	   spawn,          {.v = discord } }, // spawn discord screen audio
 };
 
 #if KEYMODES_PATCHs
@@ -1344,7 +1339,7 @@ static const Command commands[] = {
 	{ {ShiftMask,   0,          0,         0},    {XK_period, XK_b,     XK_n,      XK_Return},    focusstack,      {.i = +1} },
 	{ {ShiftMask,   0,          ShiftMask, 0},    {XK_period, XK_b,     XK_n,      XK_Return},    focusstack,      {.i = -1} }, 
 };
-#endif // KEYMODES_PATCH
+#endif /// KEYMODES_PATCH
 
 /* button definitions */
 #if STATUSBUTTON_PATCH
