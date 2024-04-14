@@ -81,6 +81,8 @@ mod + shift + r = dmenu run command
 
 mod + shift + b = rofi bluetooth menu
 
+mod + shift + d = discord-screenaudio open
+
 ## st bnindings
 
 mod + equals = size up ( in st ) 
